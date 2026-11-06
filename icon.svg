@@ -1,0 +1,13 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="7.5" width="28" height="21" rx="4" fill="url(#card)" />
+  <path d="M9 18.2h12.5" stroke="#0B1220" stroke-width="2.4" stroke-linecap="round" stroke-opacity="0.55" />
+  <circle cx="26" cy="18.2" r="3.6" fill="#0B1220" fill-opacity="0.55" />
+  <path d="M25 14.6l4.4-2.6v12l-4.4-2.6" fill="#0B1220" fill-opacity="0.55" />
+  <path d="M21.5 7.5h7A3.5 3.5 0 0132 11v3.4" stroke="#45E7A4" stroke-width="2.2" stroke-linecap="round" />
+  <defs>
+    <linearGradient id="card" x1="4" y1="7.5" x2="32" y2="28.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69B9FF" />
+      <stop offset="1" stop-color="#324DE2" />
+    </linearGradient>
+  </defs>
+</svg>

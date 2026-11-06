@@ -1,0 +1,11 @@
+# Inserts this bundle's Host row into the profile composition. The row's
+# `config` is read by index.js; every field is optional and falls back to the
+# defaults documented in README.md.
+- insert:
+    - id: welcome-bypass
+      name: dsh-welcome-bypass
+      config:
+        enabled: true
+        ref: DEEPSEEK_API_KEY
+        placeholder: dsh-welcome-bypass-placeholder
+        refill: true

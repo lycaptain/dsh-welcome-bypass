@@ -1,0 +1,49 @@
+{
+  "name": "dsh-welcome-bypass",
+  "version": "1.0.0",
+  "description": "Keeps the DeepSeek Harness Desktop startup gate satisfied so the workspace opens without entering an API key. Only touches the local credential-presence check; it does not read, change, or bypass any login, session, or remote authentication state.",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    },
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "cordis",
+    "desktop",
+    "onboarding"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0"
+  },
+  "author": "huangly101",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lycaptain/dsh-welcome-bypass.git"
+  },
+  "homepage": "https://github.com/lycaptain/dsh-welcome-bypass#readme",
+  "bugs": {
+    "url": "https://github.com/lycaptain/dsh-welcome-bypass/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
