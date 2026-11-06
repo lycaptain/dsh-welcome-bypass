@@ -1,7 +1,8 @@
 # dsh-welcome-bypass
 
-桌面端（DeepSeek Harness Desktop）每次启动都会先弹出一个「添加一个 API Key 开始使用」的启动门槛窗口。
-这个插件让该门槛始终处于「已满足」状态，从而**不必输入 API Key 就能直接进入工作区**。
+未配置任何凭据时，桌面端（DeepSeek Harness Desktop）启动会先弹出「添加一个 API Key 开始使用」的启动门槛窗口。
+
+这个窗口本身就提供「稍后设置」（`Set up later`，对应 `WELCOME_IPC.skip` → `enterWorkspace`），可以直接跳过。**但那个选择只在当次启动有效，下次启动照旧弹出**，因为它不会写回任何持久状态。本插件让「跳过」这件事持久化：使门槛始终处于「已满足」状态，从而**不必输入 API Key 就能直接进入工作区，且重启后依然如此**。
 
 > **它不涉及登录。** 本插件只影响本地启动门槛对「凭据是否已配置」的判断，**不读取、不修改、也不绕过任何登录态、会话、心跳或远程授权**。它没有网络代码，不与任何服务器通信。
 
@@ -16,9 +17,28 @@ needsWelcome(authentication) = !authentication.loggedIn && !authentication.hasAp
 - `loggedIn`：账号状态是否为 `credential-stored`（需要真正登录）。**本插件从不触碰这一项。**
 - `hasApiKey`：**任意一个**被当前 provider 目录声明过的凭据引用（官方 `llm-deepseek` 的 `apiKeyEnv`，以及每个可配置 provider 的 `settingsPath.apiKeyEnv`）在 `credentials` 服务里 `configured === true`。
 
-关键点是：门槛**从不校验 Key 的内容**，只看该引用「是否已配置」。所以只要某个被声明的引用已存有任意非空值，门槛就不会出现。
+关键点是：门槛**从不校验 Key 的内容**。保存路径上唯一的校验是：
+
+```js
+// connectDesktopWelcome 的 save()
+if (!/^[\x21-\x7e]+$/.test(apiKey)) return { ok: false };
+```
+
+也就是说只要求「非空、无空格、可打印 ASCII」——`x` 这样的值同样能通过，没有任何格式、长度或网络校验。`hasApiKey` 则由 `credentials.describe` 的 `configured` 字段算出，**只看该引用是否存过值**。
 
 本插件在启动时做且只做一件事：如果所有候选引用都未配置，就为其中一个写入一个占位值。它**永不覆盖已有值**（先 `describe`），并在该引用被 `unset` 之后自动补回（`refill`），因此重启后依然跳过。
+
+## 为什么不用「手动填一个假 Key」
+
+手动在门槛窗口里填一个假 Key 确实能绕过，机制完全相同（见上）。但它有三个缺点，这正是插件存在的理由：
+
+| | 手动填假 Key | 本插件 |
+| --- | --- | --- |
+| 跨重启 | 填一次失效一次？不，值是持久化的——但**一旦被 `unset` 就永久失效**，需要人工再填 | `reference-updated` 后自动补回，无需人工介入 |
+| 官方 provider 显示 | 显示为「已配置」，实际不可用 | 同样如此（这是共用代价，不是插件引入的） |
+| 多 profile / 换机 | 每处都要手工重做 | 安装即生效 |
+
+换言之：**手动填假 Key 能行，但那是一次性的手工动作；插件把它变成了自动维持的状态。**
 
 ## ⚠️ 前置条件：装完之后仍需要能用的模型
 
